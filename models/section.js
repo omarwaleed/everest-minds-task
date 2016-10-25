@@ -3,7 +3,10 @@ var Schema = mongoose.Schema;
 
 var SectionSchema = new Schema({
 
-	questionnaireId: Schema.Types.ObjectId;
+	questionnaireId: {
+		type: Schema.Types.ObjectId,
+		required: true
+	}
 
 });
 

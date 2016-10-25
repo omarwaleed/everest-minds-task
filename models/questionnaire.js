@@ -3,8 +3,8 @@ var Schema = mongoose.Schema;
 
 var QuestionnaireSchema = new Schema({
 
-	title: String,
-	description: String
+	title: {type: String, required: true},
+	description: {type: String, required: true}
 
 });
 
