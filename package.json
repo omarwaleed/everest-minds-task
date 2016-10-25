@@ -15,7 +15,12 @@
     "express": "~4.13.4",
     "grunt": "^1.0.1",
     "jquery": "^3.1.1",
+    "mongoose": "^4.6.5",
     "morgan": "~1.7.0",
     "serve-favicon": "~2.3.0"
+  },
+  "devDependencies": {
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-uglify": "^2.0.0"
   }
 }
