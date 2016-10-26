@@ -5,7 +5,8 @@ var UserSchema = new Schema({
 
 	username: {
 		type: String,
-		required: true
+		required: true,
+		unique: true
 	},
 	password: {
 		type: String,
@@ -14,4 +15,4 @@ var UserSchema = new Schema({
 
 });
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model('User', UserSchema, 'user');

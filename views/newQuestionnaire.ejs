@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>New Questionnaire</title>
+	<script src="/javascripts/scripts.js"></script>
+	<link rel="stylesheet" type="text/css" href="/dist/css/bootstrap.min.css">
+	<link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+
+	<script type="text/javascript">
+
+	var app = angular.module('drag-ques', ['ngDragDrop']);
+
+	app.controller('mainCtrl', function ($scope) {
+		$scope.questionTypes = [{name: 'Multiple Choice'}, {name: 'Single Choice'}, {name: 'True/False'},
+		{name: 'Long Description'}, {name: 'Short Description'}, {name: 'Date/Time'}];
+
+		$scope.questions = [];
+
+		$scope.shouldHide = function () {
+			return $scope.questions.length > 0; 
+		}
+	});
+
+	</script>
+
+</head>
+<body ng-app="drag-ques">
+	<div class="container" ng-controller="mainCtrl">
+		<div class="row">
+			<div class="col-lg-6 col-md-offset-2">
+				<div style="background-color: #fff">
+					<input type="text" name="Title">
+					<input type="text" name="Descritpion">
+					<!-- <p style="font-family: 'Raleway', sans-serif; font-size: 100px; color: #444"></p> -->
+					<ol data-drop="true" ng-model="questions" jqyoui-droppable="{multiple:true}">
+						<div ng-repeat="q in questions track by $index" data-drag="true" ng-show="item.title" data-drag="true" data-jqyoui-options="{revert: 'invalid', helper: 'clone'}" ng-model="list4" jqyoui-draggable="{index: {{$index}},animate:true}"></div>
+						<h3 ng-hide="shouldHide()">Drag Here</h3>
+					</ol>
+					
+				</div>
+				<div class="col-lg-3">
+					<ul>
+						<li ng-repeat="type in questionTypes" ng-show="type.name" data-drag="true" data-jqyoui-options="{revert: 'invalid', helper: 'clone'}" ng-model="list1" jqyoui-draggable="{index: {{$index}}, animate: true, placeholder: 'keep'}">{{type.name}}</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
