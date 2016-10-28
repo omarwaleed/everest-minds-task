@@ -17,7 +17,25 @@
 		$scope.questions = [];
 
 		$scope.shouldHide = function () {
-			return $scope.questions.length > 0; 
+			// return $scope.questions.length > 0;
+			return false;
+		}
+
+		$scope.droppedQuestion = function () {
+			// console.log('DROPPED HERE');
+			// console.log($scope.questions);
+      console.log($scope.questions.length);
+			if ($scope.questions.length > 0) {
+        switch($scope.questions[$scope.questions.length - 1].name) {
+            case 'Multiple Choice': $('#drops').append('<label>Multiple Choice </label><input type="text" id="'+parseInt(new Date() / 1000)+'" placeholder="Question"></input><br>'); break;
+          case 'Single Choice': $('#drops').append('<label>Single Choice </label><input type="text" id="'+parseInt(new Date() / 1000)+'" placeholder="Question"></input><br>'); break;
+          case 'True/False': $('#drops').append('<label>True/False </label><input type="text" id="'+parseInt(new Date() / 1000)+'" placeholder="Question"></input><br>'); break;
+          case 'Long Description': $('#drops').append('<label>Long Desc </label><input type="text" id="'+parseInt(new Date() / 1000)+'" placeholder="Question"></input><br>'); break;
+          case 'Short Description': $('#drops').append('<label>Short Desc </label><input type="text" id="'+parseInt(new Date() / 1000)+'" placeholder="Question"></input><br>'); break;
+          case 'Date/Time': $('#drops').append('<label>Date time </label><input type="text" id="'+parseInt(new Date() / 1000)+'" placeholder="Question"></input><br>'); break;
+          default: $('#drops').append('<label>Others</label>');
+        }
+			}
 		}
 	});
 
@@ -26,23 +44,27 @@
 </head>
 <body ng-app="drag-ques">
 	<div class="container" ng-controller="mainCtrl">
-		<div class="row">
+		<div class="row" style="margin-top: 100px;">
 			<div class="col-lg-6 col-md-offset-2">
 				<div style="background-color: #fff">
 					<input type="text" name="Title">
 					<input type="text" name="Descritpion">
 					<!-- <p style="font-family: 'Raleway', sans-serif; font-size: 100px; color: #444"></p> -->
-					<ol data-drop="true" ng-model="questions" jqyoui-droppable="{multiple:true}">
-						<div ng-repeat="q in questions track by $index" data-drag="true" ng-show="item.title" data-drag="true" data-jqyoui-options="{revert: 'invalid', helper: 'clone'}" ng-model="list4" jqyoui-draggable="{index: {{$index}},animate:true}"></div>
+					<!-- <ol data-drop="true" ng-model="questions" jqyoui-droppable="{multiple:true, onDrop: droppedQuestion()}">
+						<div ng-repeat="q in questions track by $index" data-drag="true" ng-show="item.title" data-drag="true" data-jqyoui-options="{revert: 'invalid', helper: 'clone'}" ng-model="questions" jqyoui-draggable="{index: {{$index}},animate:true}"><h5>{{q.name}}</h5></div>
 						<h3 ng-hide="shouldHide()">Drag Here</h3>
-					</ol>
-					
+					</ol> -->
+					<ol data-drop="true" ng-model='questions' jqyoui-droppable="{multiple:true}" id="drops">
+		                <li ng-repeat="item in questions track by $index" data-drag="true" data-jqyoui-options="{revert: 'invalid', helper: 'clone'}" ng-model="questions" jqyoui-draggable="{index: {{$index}},animate:true, onDrop: droppedQuestion()}">{{item.name}}</li>
+		                <h3 class="placeholder">Add your items here</h3>
+		            </ol>
+
 				</div>
-				<div class="col-lg-3">
-					<ul>
-						<li ng-repeat="type in questionTypes" ng-show="type.name" data-drag="true" data-jqyoui-options="{revert: 'invalid', helper: 'clone'}" ng-model="list1" jqyoui-draggable="{index: {{$index}}, animate: true, placeholder: 'keep'}">{{type.name}}</li>
-					</ul>
-				</div>
+			</div>
+			<div class="col-lg-3">
+				<ul>
+					<li ng-repeat="type in questionTypes" ng-show="type.name" data-drag="true" data-jqyoui-options="{revert: 'invalid', helper: 'clone'}" ng-model="questionTypes" jqyoui-draggable="{index: {{$index}}, animate: true, placeholder: 'keep'}">{{type.name}}</li>
+				</ul>
 			</div>
 		</div>
 	</div>
