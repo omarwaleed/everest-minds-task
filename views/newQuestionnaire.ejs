@@ -37,33 +37,6 @@
 			if ($scope.questions.length > 0) {
 				var tag = parseInt(new Date() / 1000);
 				var theName = $scope.questions[$scope.questions.length - 1].name;
-		        // switch($scope.questions[$scope.questions.length - 1].name) {
-		        //   case 'Multiple Choice':
-		        //         $('#drops').append('<label>Multiple Choice </label><input class="questionfield" type="text" id="'+tag+'" placeholder="Question"></input> <span class="glyphicon glyphicon-remove-circle"></span><br>');
-		        //         $scope.questions[$scope.questions.length - 1].tag = tag;
-		        //         break;
-		        //   case 'Single Choice':
-		        //         $('#drops').append('<label>Single Choice </label><input class="questionfield" type="text" id="'+tag+'" placeholder="Question"></input> <span class="glyphicon glyphicon-remove-circle"></span><br>');
-		        //         $scope.questions[$scope.questions.length - 1].tag = tag;
-		        //         break;
-		        //   case 'True/False':
-		        //         $('#drops').append('<label>True/False </label><input class="questionfield" type="text" id="'+tag+'" placeholder="Question"></input> <span class="glyphicon glyphicon-remove-circle"></span><br>');
-		        //         $scope.questions[$scope.questions.length - 1].tag = tag;
-		        //         break;
-		        //   case 'Long Description':
-		        //         $('#drops').append('<label>Long Desc </label><input class="questionfield" type="text" id="'+tag+'" placeholder="Question"></input> <span class="glyphicon glyphicon-remove-circle"></span><br>');
-		        //         $scope.questions[$scope.questions.length - 1].tag = tag;
-		        //         break;
-		        //   case 'Short Description':
-		        //         $('#drops').append('<label>Short Desc </label><input class="questionfield" type="text" id="'+tag+'" placeholder="Question"></input> <span class="glyphicon glyphicon-remove-circle"></span><br>');
-		        //         $scope.questions[$scope.questions.length - 1].tag = tag;
-		        //         break;
-		        //   case 'Date/Time':
-		        //         $('#drops').append('<label>Date time </label><input class="questionfield" type="text" id="'+tag+'" placeholder="Question"></input> <span class="glyphicon glyphicon-remove-circle"></span><br>');
-		        //         $scope.questions[$scope.questions.length - 1].tag = tag;
-		        //         break;
-		        //   default: $('#drops').append('<label>Others</label>'); return;
-		        // }
 		        $('#drops').append('<label>'+theName+' </label><input class="questionfield" type="text" id="'+tag+'" placeholder="Question"></input> <a class="glyphicon glyphicon-remove-circle" ng-click="getIndex()"></a><br>');
 		        $scope.questions[$scope.questions.length - 1].tag = tag;
 		        console.log($scope.questions);
