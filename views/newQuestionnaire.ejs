@@ -25,9 +25,20 @@
 			return $scope.questions.length < 1;
 		}
 
-		$scope.printIndex = function ($event) {
-			console.log($event.currentTarget);
-			console.log($(this).index(this)); 
+		$scope.removeQuestion = function ($event) {
+			// index depends on number of elements
+			var mainNode = $event.currentTarget.parentNode;
+
+			// remove from questions list
+			for (var i = $scope.questions.length - 1; i >= 0; i--) {
+				if ($scope.questions[i].tag.toString() == mainNode.id) {
+					$scope.questions.splice(i, 1);
+					mainNode.remove();
+					break;
+				}
+			}
+
+			console.log(mainNode.id);
 		}
 
 		$scope.droppedQuestion = function () {
@@ -37,7 +48,7 @@
 			if ($scope.questions.length > 0) {
 				var tag = parseInt(new Date() / 1000);
 				var theName = $scope.questions[$scope.questions.length - 1].name;
-		        var element = $('#drops').append('<label>'+theName+' </label><input class="questionfield" type="text" id="'+tag+'" placeholder="Question"></input> <a class="glyphicon glyphicon-remove-circle" ng-click="printIndex($event)"></a><br>');
+		        var element = $('#drops').append('<div id="'+tag+'"><label>'+theName+' </label><input class="questionfield" type="text" placeholder="Question"></input> <a class="glyphicon glyphicon-remove-circle" ng-click="removeQuestion($event)"></a><br></div>');
 		        $compile(element)($scope);
 		        $scope.questions[$scope.questions.length - 1].tag = tag;
 		        console.log($scope.questions);
@@ -63,10 +74,6 @@
 					<input type="text" name="title" placeholder="Title">
 					<input type="text" name="descritpion" placeholder="Description">
 					<!-- <p style="font-family: 'Raleway', sans-serif; font-size: 100px; color: #444"></p> -->
-					<!-- <ol data-drop="true" ng-model="questions" jqyoui-droppable="{multiple:true, onDrop: droppedQuestion()}">
-						<div ng-repeat="q in questions track by $index" data-drag="true" ng-show="item.title" data-drag="true" data-jqyoui-options="{revert: 'invalid', helper: 'clone'}" ng-model="questions" jqyoui-draggable="{index: {{$index}},animate:true}"><h5>{{q.name}}</h5></div>
-						<h3 ng-hide="shouldHide()">Drag Here</h3>
-					</ol> -->
 					<ol data-drop="true" ng-model='questions' jqyoui-droppable="{multiple:true}">
 						<li ng-repeat="item in questions track by $index" data-drag="true" data-jqyoui-options="{revert: 'invalid', helper: 'clone'}" ng-model="questions" jqyoui-draggable="{index: {{$index}},animate:true, onDrop: droppedQuestion()}">{{item.name}}</li>
 						<h3 class="placeholder">Add your questions here</h3>
