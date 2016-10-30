@@ -10,7 +10,7 @@
 
 		var app = angular.module('drag-ques', ['ngDragDrop']);
 
-		app.controller('mainCtrl', function ($scope) {
+		app.controller('mainCtrl', function ($scope, $compile) {
 			$scope.questionTypes = [{name: 'Multiple Choice'}, {name: 'Single Choice'}, {name: 'True/False'},
 			{name: 'Long Description'}, {name: 'Short Description'}, {name: 'Date/Time'}];
 
@@ -25,9 +25,9 @@
 			return $scope.questions.length < 1;
 		}
 
-		$scope.getIndex = function () {
-			console.log('HERE');
-			console.log($('div').index(this)); 
+		$scope.printIndex = function ($event) {
+			console.log($event.currentTarget);
+			console.log($(this).index(this)); 
 		}
 
 		$scope.droppedQuestion = function () {
@@ -37,12 +37,13 @@
 			if ($scope.questions.length > 0) {
 				var tag = parseInt(new Date() / 1000);
 				var theName = $scope.questions[$scope.questions.length - 1].name;
-		        $('#drops').append('<label>'+theName+' </label><input class="questionfield" type="text" id="'+tag+'" placeholder="Question"></input> <a class="glyphicon glyphicon-remove-circle" ng-click="getIndex()"></a><br>');
+		        var element = $('#drops').append('<label>'+theName+' </label><input class="questionfield" type="text" id="'+tag+'" placeholder="Question"></input> <a class="glyphicon glyphicon-remove-circle" ng-click="printIndex($event)"></a><br>');
+		        $compile(element)($scope);
 		        $scope.questions[$scope.questions.length - 1].tag = tag;
 		        console.log($scope.questions);
 		    }
 		}
-});
+	});
 
 </script>
 
