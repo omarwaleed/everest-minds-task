@@ -8,69 +8,77 @@
 
 	<script type="text/javascript">
 
-	var app = angular.module('drag-ques', ['ngDragDrop']);
+		var app = angular.module('drag-ques', ['ngDragDrop']);
 
-	app.controller('mainCtrl', function ($scope) {
-		$scope.questionTypes = [{name: 'Multiple Choice'}, {name: 'Single Choice'}, {name: 'True/False'},
-		{name: 'Long Description'}, {name: 'Short Description'}, {name: 'Date/Time'}];
+		app.controller('mainCtrl', function ($scope) {
+			$scope.questionTypes = [{name: 'Multiple Choice'}, {name: 'Single Choice'}, {name: 'True/False'},
+			{name: 'Long Description'}, {name: 'Short Description'}, {name: 'Date/Time'}];
 
-		$scope.questions = [];
+			$scope.questions = [];
 
-		$scope.shouldHide = function () {
+			$scope.shouldHide = function () {
 			// return $scope.questions.length > 0;
 			return false;
 		}
 
-    $scope.hideSubmit = function () {
+		$scope.hideSubmit = function () {
 			return $scope.questions.length < 1;
+		}
+
+		$scope.getIndex = function () {
+			console.log('HERE');
+			console.log($('div').index(this)); 
 		}
 
 		$scope.droppedQuestion = function () {
 			// console.log('DROPPED HERE');
 			// console.log($scope.questions);
-      console.log($scope.questions.length);
+			console.log($scope.questions.length);
 			if ($scope.questions.length > 0) {
-        var tag = parseInt(new Date() / 1000);
-        switch($scope.questions[$scope.questions.length - 1].name) {
-          case 'Multiple Choice':
-                $('#drops').append('<label>Multiple Choice </label><input class="questionfield" type="text" id="'+tag+'" placeholder="Question"></input><br>');
-                $scope.questions[$scope.questions.length - 1].tag = tag;
-                break;
-          case 'Single Choice':
-                $('#drops').append('<label>Single Choice </label><input class="questionfield" type="text" id="'+tag+'" placeholder="Question"></input><br>');
-                $scope.questions[$scope.questions.length - 1].tag = tag;
-                break;
-          case 'True/False':
-                $('#drops').append('<label>True/False </label><input class="questionfield" type="text" id="'+tag+'" placeholder="Question"></input><br>');
-                $scope.questions[$scope.questions.length - 1].tag = tag;
-                break;
-          case 'Long Description':
-                $('#drops').append('<label>Long Desc </label><input class="questionfield" type="text" id="'+tag+'" placeholder="Question"></input><br>');
-                $scope.questions[$scope.questions.length - 1].tag = tag;
-                break;
-          case 'Short Description':
-                $('#drops').append('<label>Short Desc </label><input class="questionfield" type="text" id="'+tag+'" placeholder="Question"></input><br>');
-                $scope.questions[$scope.questions.length - 1].tag = tag;
-                break;
-          case 'Date/Time':
-                $('#drops').append('<label>Date time </label><input class="questionfield" type="text" id="'+tag+'" placeholder="Question"></input><br>');
-                $scope.questions[$scope.questions.length - 1].tag = tag;
-                break;
-          default: $('#drops').append('<label>Others</label>');
-        }
-        console.log($scope.questions);
-			}
+				var tag = parseInt(new Date() / 1000);
+				var theName = $scope.questions[$scope.questions.length - 1].name;
+		        // switch($scope.questions[$scope.questions.length - 1].name) {
+		        //   case 'Multiple Choice':
+		        //         $('#drops').append('<label>Multiple Choice </label><input class="questionfield" type="text" id="'+tag+'" placeholder="Question"></input> <span class="glyphicon glyphicon-remove-circle"></span><br>');
+		        //         $scope.questions[$scope.questions.length - 1].tag = tag;
+		        //         break;
+		        //   case 'Single Choice':
+		        //         $('#drops').append('<label>Single Choice </label><input class="questionfield" type="text" id="'+tag+'" placeholder="Question"></input> <span class="glyphicon glyphicon-remove-circle"></span><br>');
+		        //         $scope.questions[$scope.questions.length - 1].tag = tag;
+		        //         break;
+		        //   case 'True/False':
+		        //         $('#drops').append('<label>True/False </label><input class="questionfield" type="text" id="'+tag+'" placeholder="Question"></input> <span class="glyphicon glyphicon-remove-circle"></span><br>');
+		        //         $scope.questions[$scope.questions.length - 1].tag = tag;
+		        //         break;
+		        //   case 'Long Description':
+		        //         $('#drops').append('<label>Long Desc </label><input class="questionfield" type="text" id="'+tag+'" placeholder="Question"></input> <span class="glyphicon glyphicon-remove-circle"></span><br>');
+		        //         $scope.questions[$scope.questions.length - 1].tag = tag;
+		        //         break;
+		        //   case 'Short Description':
+		        //         $('#drops').append('<label>Short Desc </label><input class="questionfield" type="text" id="'+tag+'" placeholder="Question"></input> <span class="glyphicon glyphicon-remove-circle"></span><br>');
+		        //         $scope.questions[$scope.questions.length - 1].tag = tag;
+		        //         break;
+		        //   case 'Date/Time':
+		        //         $('#drops').append('<label>Date time </label><input class="questionfield" type="text" id="'+tag+'" placeholder="Question"></input> <span class="glyphicon glyphicon-remove-circle"></span><br>');
+		        //         $scope.questions[$scope.questions.length - 1].tag = tag;
+		        //         break;
+		        //   default: $('#drops').append('<label>Others</label>'); return;
+		        // }
+		        $('#drops').append('<label>'+theName+' </label><input class="questionfield" type="text" id="'+tag+'" placeholder="Question"></input> <a class="glyphicon glyphicon-remove-circle" ng-click="getIndex()"></a><br>');
+		        $scope.questions[$scope.questions.length - 1].tag = tag;
+		        console.log($scope.questions);
+		    }
 		}
-	});
+});
 
-	</script>
+</script>
 
-  <style>
-    .questionfield {
-      margin-left: 5px;
-      border-radius: 3px;
-    }
-  </style>
+<style>
+	.questionfield {
+		margin-left: 5px;
+		border-radius: 3px;
+	}
+</style>
 
 </head>
 <body ng-app="drag-ques">
@@ -78,23 +86,23 @@
 		<div class="row" style="margin-top: 100px;">
 			<div class="col-lg-6 col-md-offset-2">
 				<div style="background-color: #fff">
-					<input type="text" name="Title">
-					<input type="text" name="Descritpion">
+					<input type="text" name="title" placeholder="Title">
+					<input type="text" name="descritpion" placeholder="Description">
 					<!-- <p style="font-family: 'Raleway', sans-serif; font-size: 100px; color: #444"></p> -->
 					<!-- <ol data-drop="true" ng-model="questions" jqyoui-droppable="{multiple:true, onDrop: droppedQuestion()}">
 						<div ng-repeat="q in questions track by $index" data-drag="true" ng-show="item.title" data-drag="true" data-jqyoui-options="{revert: 'invalid', helper: 'clone'}" ng-model="questions" jqyoui-draggable="{index: {{$index}},animate:true}"><h5>{{q.name}}</h5></div>
 						<h3 ng-hide="shouldHide()">Drag Here</h3>
 					</ol> -->
 					<ol data-drop="true" ng-model='questions' jqyoui-droppable="{multiple:true}">
-		                <li ng-repeat="item in questions track by $index" data-drag="true" data-jqyoui-options="{revert: 'invalid', helper: 'clone'}" ng-model="questions" jqyoui-draggable="{index: {{$index}},animate:true, onDrop: droppedQuestion()}">{{item.name}}</li>
-		                <h3 class="placeholder">Add your questions here</h3>
-                    <form action="index.html" method="post">
-                      <div id="drops">
+						<li ng-repeat="item in questions track by $index" data-drag="true" data-jqyoui-options="{revert: 'invalid', helper: 'clone'}" ng-model="questions" jqyoui-draggable="{index: {{$index}},animate:true, onDrop: droppedQuestion()}">{{item.name}}</li>
+						<h3 class="placeholder">Add your questions here</h3>
+						<form action="index.html" method="post">
+							<div id="drops">
 
-                      </div>
-                      <input type="submit" ng-hide="hideSubmit()" class="btn btn-success">
-                    </form>
-		            </ol>
+							</div>
+							<input type="submit" ng-hide="hideSubmit()" class="btn btn-success">
+						</form>
+					</ol>
 
 				</div>
 			</div>
