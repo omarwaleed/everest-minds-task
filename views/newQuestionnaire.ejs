@@ -15,8 +15,9 @@
 			{name: 'Long Description'}, {name: 'Short Description'}, {name: 'Date/Time'}];
 
 			$scope.questions = [];
+			$scope.sections = ["Default"];
 
-			$scope.shouldHide = function () {
+		$scope.shouldHide = function () {
 			// return $scope.questions.length > 0;
 			return false;
 		}
@@ -48,44 +49,52 @@
 			if ($scope.questions.length > 0) {
 				var tag = parseInt(new Date() / 1000);
 				var theName = $scope.questions[$scope.questions.length - 1].name;
-		        var element = $('#drops').append('<div id="'+tag+'"><label>'+theName+' </label><input class="questionfield" type="text" placeholder="Question"></input> <a class="glyphicon glyphicon-remove-circle" ng-click="removeQuestion($event)"></a><br></div>');
-		        $compile(element)($scope);
-		        $scope.questions[$scope.questions.length - 1].tag = tag;
-		        console.log($scope.questions);
-		    }
+				var element = $('#drops').append('<div id="'+tag+'"><label>'+theName+' </label><input class="questionfield" type="text" placeholder="Question" ng-blur="updateQuestions()"></input><select><option ng-repeat="section in sections" ng-model="sections">{{section}}</option></select> <a class="glyphicon glyphicon-remove-circle" ng-click="removeQuestion($event)"></a><br></div>');
+				$compile(element)($scope);
+				$scope.questions[$scope.questions.length - 1].tag = tag;
+				console.log($scope.questions);
+			}
+		}
+
+		$scope.addSection = function () {
+			var name = $('#new_section').val();
+			if (name == "") {return;}
+			console.log(name);
+			$scope.sections.push(name);
 		}
 	});
 
-</script>
+	</script>
 
-<style>
-	.questionfield {
-		margin-left: 5px;
-		border-radius: 3px;
-	}
-</style>
+	<style>
+		.questionfield {
+			margin-left: 5px;
+			border-radius: 3px;
+		}
+	</style>
 
 </head>
 <body ng-app="drag-ques">
 	<div class="container" ng-controller="mainCtrl">
 		<div class="row" style="margin-top: 100px;">
 			<div class="col-lg-6 col-md-offset-2">
-				<div style="background-color: #fff">
-					<input type="text" name="title" placeholder="Title">
-					<input type="text" name="descritpion" placeholder="Description">
-					<!-- <p style="font-family: 'Raleway', sans-serif; font-size: 100px; color: #444"></p> -->
-					<ol data-drop="true" ng-model='questions' jqyoui-droppable="{multiple:true}">
-						<li ng-repeat="item in questions track by $index" data-drag="true" data-jqyoui-options="{revert: 'invalid', helper: 'clone'}" ng-model="questions" jqyoui-draggable="{index: {{$index}},animate:true, onDrop: droppedQuestion()}">{{item.name}}</li>
-						<h3 class="placeholder">Add your questions here</h3>
-						<form action="index.html" method="post">
+				<input type="text" id="new_section" placeholder="New Section"> <a ng-click="addSection()">Add Section</a>
+				<form action="/new" method="post">
+					<div style="background-color: #fff">
+						<input type="text" name="title" placeholder="Title">
+						<input type="text" name="descritpion" placeholder="Description">
+						<!-- <p style="font-family: 'Raleway', sans-serif; font-size: 100px; color: #444"></p> -->
+						<ol data-drop="true" ng-model='questions' jqyoui-droppable="{multiple:true}">
+							<div ng-repeat="item in questions track by $index" data-drag="true" data-jqyoui-options="{revert: 'invalid', helper: 'clone'}" ng-model="questions" jqyoui-draggable="{index: {{$index}},animate:true, onDrop: droppedQuestion()}"></div>
+							<h3 class="placeholder">Add your questions here</h3>
 							<div id="drops">
 
 							</div>
+							<input type="hidden" name="thedata" ng-model="questions">
 							<input type="submit" ng-hide="hideSubmit()" class="btn btn-success">
-						</form>
-					</ol>
-
-				</div>
+						</ol>
+					</div>
+				</form>
 			</div>
 			<div class="col-lg-3">
 				<ul>

@@ -12,10 +12,6 @@ router.get('/', function(req, res, next) {
 router.post('/login', function(req, res, next) {
 	var username = req.body.username;
 	var password = req.body.password;
-	console.log('-----------');
-	console.log(username);
-	console.log(password);
-	console.log('-----------');
 
 	if (username != null && username != '' && password != null && password != '') {
 
@@ -66,23 +62,18 @@ router.route('/signup')
 				res.render('signin');
 			}
 		});
-		console.log('Finished');
-		// createdUser.save(function (err) {
-		// 	if (err) {
-		// 		console.log('Error');
-		// 		res.render('/signup', {message: "Username already exists"});
-		// 	} else {
-		// 		console.log('Success');
-		// 		res.render('/signin');
-		// 		// res.send("Signed in");
-		// 	}
-		// });
 	}
 });
 
 router.route('/new')
 .get(function (req, res) {
 	res.render('newQuestionnaire') ;
+})
+.post(function (req, res) {
+	console.log('------------');
+	console.log(req);
+	console.log('------------ RES');
+	res.send("Done");
 });
 
 
