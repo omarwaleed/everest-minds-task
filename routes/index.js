@@ -29,7 +29,8 @@ router.post('/login', function(req, res, next) {
 			if (user != null) {
 				console.log('in not null if');
 				res.cookie('username', user.username);
-				res.send("OK");
+				// res.send("OK");
+				res.redirect('/new');
 			}
 		});
 
@@ -40,7 +41,7 @@ router.post('/login', function(req, res, next) {
 
 router.route('/signup')
 .get(function (req, res) {
-	res.send('signup');
+	res.render('signup', {message: null});
 })
 .post(function (req, res) {
 	// handles the sign up process
@@ -48,18 +49,34 @@ router.route('/signup')
 
 	var username = req.body.username;
 	var password = req.body.password;
+	console.log(username,password);
 	if (username != null && username != '' && password != null && password != '') {
-		User.new({
+		console.log('entered');
+		var createdUser = new User({
 			username: username,
 			password: password
-		}).save(function (err) {
-			if (err) {
-				res.render('/signup', {message: "Username already exists"});
-			} else {
-				res.render('/signin');
-				// res.send("Signed in");
+		});
+		createdUser.save(function (error, user) {
+			if (error) {
+				console.log('Error', error);
+				res.render('signup', {message: 'error happened'});
 			}
-		})
+			else {
+				console.log('New user', user);
+				res.render('signin');
+			}
+		});
+		console.log('Finished');
+		// createdUser.save(function (err) {
+		// 	if (err) {
+		// 		console.log('Error');
+		// 		res.render('/signup', {message: "Username already exists"});
+		// 	} else {
+		// 		console.log('Success');
+		// 		res.render('/signin');
+		// 		// res.send("Signed in");
+		// 	}
+		// });
 	}
 });
 

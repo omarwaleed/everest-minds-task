@@ -6,7 +6,8 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var mongoose = require('mongoose');
-mongoose.createConnection('localhost/everest-task');
+mongoose.Promise = global.Promise;
+mongoose.connect('localhost:27017/everest-task');
 
 var routes = require('./routes/index');
 // var users = require('./routes/users');
