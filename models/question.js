@@ -13,7 +13,7 @@ var QuestionSchema = new Schema({
 	},
 	type: {
 		type: String,
-		enum: ['multipleChoice', 'singleChoice', 'truefalse', 'longDesc', 'shortDesc', 'datetime']
+		enum: ['multiple', 'single', 'bool', 'long', 'short', 'date']
 	},
 	answer: {
 		type: [Schema.Types.Mixed]
