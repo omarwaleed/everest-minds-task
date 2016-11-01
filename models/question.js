@@ -3,8 +3,8 @@ var Schema = mongoose.Schema;
 
 var QuestionSchema = new Schema({
 
-	sectionId: {
-		type: Schema.Types.ObjectId,
+	section: {
+		type: String,
 		required: true
 	},
 	question: {

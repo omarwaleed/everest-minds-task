@@ -3,6 +3,7 @@
 <head>
 	<title>New Questionnaire</title>
 	<script src="/javascripts/scripts.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-filter/0.5.8/angular-filter.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="/dist/css/bootstrap.min.css">
 	<link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
 
@@ -17,52 +18,61 @@
 			$scope.questions = [];
 			$scope.sections = ["Default"];
 
-		$scope.shouldHide = function () {
-			// return $scope.questions.length > 0;
-			return false;
-		}
+			$scope.shouldHide = function () {
+				// return $scope.questions.length > 0;
+				return false;
+			}
 
-		$scope.hideSubmit = function () {
-			return $scope.questions.length < 1;
-		}
+			$scope.hideSubmit = function () {
+				return $scope.questions.length < 1;
+			}
 
-		$scope.removeQuestion = function ($event) {
-			// index depends on number of elements
-			var mainNode = $event.currentTarget.parentNode;
+			$scope.removeQuestion = function ($event) {
+				// index depends on number of elements
+				var mainNode = $event.currentTarget.parentNode;
 
-			// remove from questions list
-			for (var i = $scope.questions.length - 1; i >= 0; i--) {
-				if ($scope.questions[i].tag.toString() == mainNode.id) {
-					$scope.questions.splice(i, 1);
-					mainNode.remove();
-					break;
+				// remove from questions list
+				for (var i = $scope.questions.length - 1; i >= 0; i--) {
+					if ($scope.questions[i].tag.toString() == mainNode.id) {
+						$scope.questions.splice(i, 1);
+						mainNode.remove();
+						break;
+					}
+				}
+
+				console.log(mainNode.id);
+			}
+
+			$scope.droppedQuestion = function () {
+				// console.log('DROPPED HERE');
+				// console.log($scope.questions);
+				console.log($scope.questions.length);
+				if ($scope.questions.length > 0) {
+					var tag = parseInt(new Date() / 1000);
+					var theName = $scope.questions[$scope.questions.length - 1].name;
+					var element = $('#drops').append('<div id="'+tag+'"><label>'+theName+' </label><input class="questionfield" type="text" placeholder="Question" ng-blur="updateQuestion($event)" name="question_text"></input><input type="number" min="1" placeholder="Section Number" name="section_text" class="questionfield" ng-blur="updateQuestion($event)"></input> <a class="glyphicon glyphicon-remove-circle" ng-click="removeQuestion($event)"></a><br></div>');
+					$compile(element)($scope);
+					$scope.questions[$scope.questions.length - 1].tag = tag;
+					console.log($scope.questions);
 				}
 			}
 
-			console.log(mainNode.id);
-		}
+			$scope.updateQuestion = function ($event) {
 
-		$scope.droppedQuestion = function () {
-			// console.log('DROPPED HERE');
-			// console.log($scope.questions);
-			console.log($scope.questions.length);
-			if ($scope.questions.length > 0) {
-				var tag = parseInt(new Date() / 1000);
-				var theName = $scope.questions[$scope.questions.length - 1].name;
-				var element = $('#drops').append('<div id="'+tag+'"><label>'+theName+' </label><input class="questionfield" type="text" placeholder="Question" ng-blur="updateQuestions()"></input><select><option ng-repeat="section in sections" ng-model="sections">{{section}}</option></select> <a class="glyphicon glyphicon-remove-circle" ng-click="removeQuestion($event)"></a><br></div>');
-				$compile(element)($scope);
-				$scope.questions[$scope.questions.length - 1].tag = tag;
-				console.log($scope.questions);
+				var container = $($event.currentTarget.closest('div'));
+				var questionText = container.find('[name="question_text"]').val();
+				var sectionText = container.find('[name="section_text"]').val();
+
+				for (var i = $scope.questions.length - 1; i >= 0; i--) {
+					if ($scope.questions[i].tag.toString() == mainNode.id) {
+						$scope.questions[i].question = questionText;
+						$scope.questions[i].section = sectionText;
+						break;
+					}
+				}
 			}
-		}
 
-		$scope.addSection = function () {
-			var name = $('#new_section').val();
-			if (name == "") {return;}
-			console.log(name);
-			$scope.sections.push(name);
-		}
-	});
+		});
 
 	</script>
 
@@ -78,26 +88,27 @@
 	<div class="container" ng-controller="mainCtrl">
 		<div class="row" style="margin-top: 100px;">
 			<div class="col-lg-6 col-md-offset-2">
-				<input type="text" id="new_section" placeholder="New Section"> <a ng-click="addSection()">Add Section</a>
+				<!-- <input type="text" id="new_section" placeholder="New Section"> <a ng-click="addSection()">Add Section</a> -->
 				<form action="/new" method="post">
 					<div style="background-color: #fff">
 						<input type="text" name="title" placeholder="Title">
 						<input type="text" name="descritpion" placeholder="Description">
 						<!-- <p style="font-family: 'Raleway', sans-serif; font-size: 100px; color: #444"></p> -->
 						<ol data-drop="true" ng-model='questions' jqyoui-droppable="{multiple:true}">
-							<div ng-repeat="item in questions track by $index" data-drag="true" data-jqyoui-options="{revert: 'invalid', helper: 'clone'}" ng-model="questions" jqyoui-draggable="{index: {{$index}},animate:true, onDrop: droppedQuestion()}"></div>
-							<h3 class="placeholder">Add your questions here</h3>
+							<div ng-repeat="item in questions track by $index" data-drag="true" data-jqyoui-options="{revert: 'invalid', helper: 'clone'}" ng-model="questions" jqyoui-draggable="{index: {{$index}},animate:true, onDrop: droppedQuestion()}" style="margin-bottom: 20px;"></div>
 							<div id="drops">
 
 							</div>
+							<h3 class="placeholder">Drag your questions here</h3>
 							<input type="hidden" name="thedata" ng-model="questions">
 							<input type="submit" ng-hide="hideSubmit()" class="btn btn-success">
 						</ol>
 					</div>
 				</form>
 			</div>
-			<div class="col-lg-3">
-				<ul>
+			<div class="col-lg-3 text-center">
+				<ul style="list-style: none;">
+					<h3>Question Types</h3>
 					<li ng-repeat="type in questionTypes" ng-show="type.name" data-drag="true" data-jqyoui-options="{revert: 'invalid', helper: 'clone'}" ng-model="questionTypes" jqyoui-draggable="{index: {{$index}}, animate: true, placeholder: 'keep'}">{{type.name}}</li>
 				</ul>
 			</div>
