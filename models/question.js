@@ -15,10 +15,11 @@ var QuestionSchema = new Schema({
 		type: String,
 		enum: ['multiple', 'single', 'bool', 'long', 'short', 'date']
 	},
-	answer: {
-		type: [Schema.Types.Mixed]
+	questionnaireId: {
+		type: Schema.Types.ObjectId,
+		required: true
 	}
 
 });
 
-module.exports = mongoose.model('Section', QuestionSchema);
+module.exports = mongoose.model('Question', QuestionSchema);

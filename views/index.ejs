@@ -2,12 +2,31 @@
 <html>
 <head>
 	<title>All Questionnaires</title>
+	<script src="/javascripts/scripts.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-filter/0.5.8/angular-filter.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/dist/css/bootstrap.min.css">
+	<link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+
+	<script>
+		var app = angular.module('qindex', []);
+
+		app.controller('mainCtrl', function ($scope, $http) {
+			
+			$scope.qs = [];
+			
+
+		});
+	</script>
+
 </head>
-<body style="background: url('/images/signin.jpg');">
+<body style="background: url('/images/signin.jpg');" ng-app="qindex">
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-8 col-md-offset-4">
-				
+				<!-- <% for(int i = 0; i < qs.length; i++) { %>
+					<h3><%= qs[i].title %></h3>
+				<% } %> -->
+				<h3 ng-repeat="q in qs">{{q.title}}</h3>
 			</div>
 		</div>
 	</div>

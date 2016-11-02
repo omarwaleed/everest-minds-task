@@ -70,10 +70,73 @@ router.route('/new')
 	res.render('newQuestionnaire') ;
 })
 .post(function (req, res) {
+
+	var Question = require('../models/question');
+	var Questionnaire = require('../models/questionnaire');
+
 	console.log('------------');
-	console.log(req);
+	console.log(req.body, req.cookies);
 	console.log('------------ RES');
-	res.send("Done");
+	var username = req.cookies.username;
+	var title = req.body.title;
+	var description = req.body.description;
+	var questions = req.body.question_text;
+	var sections = req.body.section_text;
+	var types = req.body.type_text;
+
+	var createdQuestionnaire = new Questionnaire({
+		title: title,
+		description: description,
+		createdBy: username
+	});
+
+	createdQuestionnaire.save(function (err, q) {
+		if (err) {
+			console.log(err);
+		} else {
+			for (var i = 0; i < questions.length - 1; i++) {
+				var qType;
+				switch (types[i]) {
+					case 'Multiple Choice':
+						qType = "multiple";
+						break;
+					case 'Single Choice':
+						qType = "single";
+						break;
+					case 'True/False':
+						qType = "bool";
+						break;
+					case 'Long Description':
+						qType = "long";
+						break;
+					case 'Short Description':
+						qType = "short";
+						break;
+					case 'Date/Time':
+						qType = "date";
+						break;
+					default:
+						break;
+				}
+				var createdQ = new Question({
+					question: questions[i],
+					section: sections[i],
+					type: qType,
+					questionnaireId: q._id
+				});
+				createdQ.save(function (error, ques) {
+					if (error) {
+						console.log("error", error);
+					} else {
+						console.log("Success", ques);
+					}
+				})
+			}
+		}
+	});
+
+
+	res.send(createdQuestionnaire);
 });
 
 
