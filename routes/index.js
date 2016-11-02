@@ -94,7 +94,7 @@ router.route('/new')
 		if (err) {
 			console.log(err);
 		} else {
-			for (var i = 0; i < questions.length - 1; i++) {
+			for (var i = 0; i < questions.length; i++) {
 				var qType;
 				switch (types[i]) {
 					case 'Multiple Choice':
@@ -130,7 +130,7 @@ router.route('/new')
 					} else {
 						console.log("Success", ques);
 					}
-				})
+				});
 			}
 		}
 	});
@@ -163,8 +163,16 @@ router.get('/qs', function (req, res) {
 
 router.get('/view/:id', function (req, res) {
 	 var Questionnaire = require('../models/questionnaire');
+	 var Question = require('../models/question');
 	 Questionnaire.findById(req.params.id, function (err, doc) {
-	 	res.send(doc);
+	 	if (err) {res.send(err)}
+ 		else {
+ 			// res.render('view', {doc: doc});
+ 			Question.find({questionnaireId: doc._id}, function (error, q) {
+ 				if(error) res.send(error);
+ 				else res.render('view', {questionnaire: doc, questions: q});
+ 			});
+ 		}
 	 });
 });
 

@@ -7,7 +7,8 @@ var bodyParser = require('body-parser');
 
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-mongoose.connect('localhost:27017/everest-task');
+mongoose.connect('mongodb://localhost:27017/everest-task');
+// mongoose.createConnection('localhost:27017/everest-task');
 
 var routes = require('./routes/index');
 // var users = require('./routes/users');
