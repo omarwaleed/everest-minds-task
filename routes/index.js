@@ -136,7 +136,36 @@ router.route('/new')
 	});
 
 
-	res.send(createdQuestionnaire);
+	res.redirect('/index');
+});
+
+router.get('/index', function (req, res) {
+
+	var Questionnaire = require('../models/questionnaire');
+	var allQs = Questionnaire.find({username: req.cookies.username});
+
+	res.render('index', {q: allQs});
+
+});
+
+router.get('/qs', function (req, res) {
+
+	console.log('Called');
+	var Questionnaire = require('../models/questionnaire');
+	console.log("username", req.cookies.username);
+	var allQs = Questionnaire.find({createdBy: req.cookies.username}, function (error, docs) {
+		if (error) {res.send();}
+		else res.json(docs);
+	});
+	// console.log(allQs);
+	// res.json(allQs);
+});
+
+router.get('/view/:id', function (req, res) {
+	 var Questionnaire = require('../models/questionnaire');
+	 Questionnaire.findById(req.params.id, function (err, doc) {
+	 	res.send(doc);
+	 });
 });
 
 

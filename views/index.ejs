@@ -13,20 +13,26 @@
 		app.controller('mainCtrl', function ($scope, $http) {
 			
 			$scope.qs = [];
-			
+			console.log('HERE');
+			// $scope.qs = <%= q %>
+			$http.get("/qs")
+			    .then(function(response) {
+			    	console.log(response.data);
+			        $scope.qs = response.data;
+			    });
 
 		});
 	</script>
 
 </head>
 <body style="background: url('/images/signin.jpg');" ng-app="qindex">
-	<div class="container">
+	<div class="container" ng-controller="mainCtrl">
 		<div class="row">
-			<div class="col-lg-8 col-md-offset-4">
-				<!-- <% for(int i = 0; i < qs.length; i++) { %>
-					<h3><%= qs[i].title %></h3>
-				<% } %> -->
-				<h3 ng-repeat="q in qs">{{q.title}}</h3>
+			<div class="col-lg-8 consolel-md-offset-4">
+				<h1>HERE</h1>
+				<ul>
+					<li ng-repeat="q in qs"><a href="/view/{{q._id}}">{{q.title}}</a></li>
+				</ul>
 			</div>
 		</div>
 	</div>
