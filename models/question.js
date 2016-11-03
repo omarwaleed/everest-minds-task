@@ -18,6 +18,10 @@ var QuestionSchema = new Schema({
 	questionnaireId: {
 		type: Schema.Types.ObjectId,
 		required: true
+	},
+	answers: {
+		type: [String],
+		required: true
 	}
 
 });

@@ -17,6 +17,7 @@
 
 			$scope.questions = [];
 			$scope.sections = [];
+			$scope.answers= [];
 
 			$scope.shouldHide = function () {
 				// return $scope.questions.length > 0;
@@ -25,6 +26,11 @@
 
 			$scope.hideSubmit = function () {
 				return $scope.questions.length < 1;
+			}
+
+			$scope.addAnswer = function (divId) {
+				var element = $("#"+divId+"ans").append('<input type="text" placeholder="Answer"></input><br>');
+				$compile(element)($scope);
 			}
 
 			$scope.removeQuestion = function ($event) {
@@ -50,7 +56,7 @@
 				if ($scope.questions.length > 0) {
 					var tag = parseInt(new Date() / 1000);
 					var theName = $scope.questions[$scope.questions.length - 1].name;
-					var element = $('#drops').append('<div id="'+tag+'"><label>'+theName+' </label><input class="questionfield" type="text" placeholder="Question" ng-blur="updateQuestion($event)" name="question_text"></input><input type="number" min="1" placeholder="Section Number" name="section_text" class="questionfield" ng-blur="updateQuestion($event)"></input> <a class="glyphicon glyphicon-remove-circle" ng-click="removeQuestion($event)"></a><input name="type_text" value="'+theName+'" type="hidden"></input><br></div>');
+					var element = $('#drops').append('<div id="'+tag+'"><label>'+theName+' </label><input class="questionfield" type="text" placeholder="Question" ng-blur="updateQuestion($event)" name="question_text"></input><input type="number" min="1" placeholder="Section Number" name="section_text" class="questionfield" ng-blur="updateQuestion($event)"></input> <a class="glyphicon glyphicon-remove-circle" ng-click="removeQuestion($event)"></a><a class="glyphicon glyphicon-plus" ng-click="addAnswer('+tag+')"></a><input name="type_text" value="'+theName+'" type="hidden"></input><br><div id="'+tag+'ans"></div></div>');
 					$compile(element)($scope);
 					$scope.questions[$scope.questions.length - 1].tag = tag;
 					// console.log($scope.questions);
@@ -106,7 +112,6 @@
 	<div class="container" ng-controller="mainCtrl">
 		<div class="row" style="margin-top: 100px;">
 			<div class="col-lg-6 col-md-offset-2">
-				<!-- <input type="text" id="new_section" placeholder="New Section"> <a ng-click="addSection()">Add Section</a> -->
 				<form action="/new" method="post">
 					<div style="background-color: #fff">
 						<input type="text" name="title" placeholder="Title" id="qtitle">
@@ -114,10 +119,10 @@
 						<!-- <p style="font-family: 'Raleway', sans-serif; font-size: 100px; color: #444"></p> -->
 						<ol data-drop="true" ng-model='questions' jqyoui-droppable="{multiple:true}">
 							<div ng-repeat="item in questions track by $index" data-drag="true" data-jqyoui-options="{revert: 'invalid', helper: 'clone'}" ng-model="questions" jqyoui-draggable="{index: {{$index}},animate:true, onDrop: droppedQuestion()}" style="margin-bottom: 20px;"></div>
+							<h3 class="placeholder">Drag your questions here</h3>
 							<div id="drops">
 
 							</div>
-							<h3 class="placeholder">Drag your questions here</h3>
 							<!-- <input type="hidden" name="thedata" ng-model="questions"> -->
 							<!-- <input type="submit" ng-hide="hideSubmit()" class="btn btn-success"> -->
 							<input type="submit" ng-hide="true" class="btn btn-success" id="submitLink">
@@ -136,7 +141,7 @@
 	</div>
 
 	<script type="text/javascript">
-		$(document).on("keypress", "form", function(event) { 
+		$(document).on("keypress", "form", function(event) {
 	    	return event.keyCode != 13;
 		});
 	</script>
