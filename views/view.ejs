@@ -4,13 +4,63 @@
 	<title>View</title>
 	<script src="/javascripts/scripts.js"></script>
 	<link rel="stylesheet" type="text/css" href="/dist/css/bootstrap.min.css">
+	<style type="text/css">
+		ul {
+			list-style-type: none;
+		}
+	</style>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>jQuery UI Datepicker - Default functionality</title>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<link rel="stylesheet" href="/resources/demos/style.css">
+	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<script>
+		$( function() {
+			$( "#datepicker" ).datepicker();
+		} );
+	</script>
 </head>
 <body>
 	<div class="container">
 		<h2><%= questionnaire.title %></h2>
 		<h3><%= questionnaire.description %></h3>
 		<% for(var i = 0; i < questions.length; i++) {%>
-			<h1><%= questions[i].question %></h1>
+			<h3><%= questions[i].question %></h3>
+			<% if(questions[i].answers && questions[i].answers.length > 0) { %>
+				<% if(questions[i].type == "multiple") { %>
+					<ul>
+						<h2><%= questions[i].answers %></h2>
+						<% for(var j = 0; j < questions[i].answers.length; j++) { %>
+							<li><input type="checkbox" name="<%= questions[i]._id %>"><%= questions[i].answers[j] %></input></li>
+						<% } %>
+					</ul>
+				<% } else { %>
+					<ul>
+						<h2><%= questions[i].answers %></h2>
+						<% for(var j = 0; j < questions[i].answers.length; j++) { %>
+							<li><input type="radio" name="<%= questions[i]._id %>"><%= questions[i].answers[j] %></input></li>
+						<% } %>
+					</ul>
+				<% } %>
+			<% } else { %>
+				<% if (questions[i].type == 'bool'){ %>
+					<ul>
+						<li><input type="radio" name="<%= questions[i]._id %>" value="true">True</input></li>
+						<li><input type="radio" name="<%= questions[i]._id %>" value="false">False</input></li>
+					</ul>
+				<% } %>
+				<% if (questions[i].type == 'long'){ %>
+					<textarea name="<%= questions[i]._id %>"></textarea>
+				<% } %>
+				<% if (questions[i].type == 'short'){ %>
+					<input type="text" name="<%= questions[i]._id %>" maxlength="150">
+				<% } %>
+				<% if (questions[i].type == 'date'){ %>
+					<input type="text" name="<%= questions[i]._id %>" id="datepicker">
+				<% } %>
+			<% } %>
 		<% } %>
 
 	</div>

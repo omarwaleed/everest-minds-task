@@ -106,6 +106,11 @@ router.route('/new')
 		// in practice, created by will use the userID not the username
 	});
 
+	if (!Array.isArray(questions) && !Array.isArray(sections)) {
+		questions = [questions];
+		sections = [sections];
+	}
+
 	createdQuestionnaire.save(function (err, q) {
 		if (err) {
 			console.log(err);
@@ -153,7 +158,7 @@ router.route('/new')
 								section: sections[i],
 								type: qType,
 								questionnaireId: q._id,
-								answers: [resultArray]
+								answers: resultArray
 							});
 						} else {
 							if (formAnswers != '') {
@@ -180,7 +185,8 @@ router.route('/new')
 						question: questions[i],
 						section: sections[i],
 						type: qType,
-						questionnaireId: q._id
+						questionnaireId: q._id,
+						answers: []
 					});
 				}
 				createdQ.save(function (error, ques) {

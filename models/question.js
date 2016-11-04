@@ -20,8 +20,7 @@ var QuestionSchema = new Schema({
 		required: true
 	},
 	answers: {
-		type: [String],
-		required: true
+		type: [String]
 	}
 
 });
