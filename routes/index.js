@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var _ = require('underscore');
 
 var mongoose = require('mongoose');
 var User = require('../models/user');
@@ -90,18 +91,19 @@ router.route('/new')
 	console.log('------------');
 	console.log(req.body);
 	console.log('------------ RES');
-	return;
 	var username = req.cookies.username;
 	var title = req.body.title;
 	var description = req.body.description;
 	var questions = req.body.question_text;
 	var sections = req.body.section_text;
 	var types = req.body.type_text;
+	var tags = req.body.all_inputs;
 
 	var createdQuestionnaire = new Questionnaire({
 		title: title,
 		description: description,
 		createdBy: username
+		// in practice, created by will use the userID not the username
 	});
 
 	createdQuestionnaire.save(function (err, q) {
@@ -132,12 +134,55 @@ router.route('/new')
 					default:
 						break;
 				}
-				var createdQ = new Question({
-					question: questions[i],
-					section: sections[i],
-					type: qType,
-					questionnaireId: q._id
-				});
+				var createdQ;
+				if (qType == "single" || qType == "multiple") {
+
+					// if single or multiple choice question get answers before create question
+					var formAnswers = req.body['a'+tags[i]];
+					if (formAnswers) {
+						// if form answers is an array check if its content doesn't contain empty fields
+							// if any empty fields is found, strip it away from the array
+						// else form answers is a singlton and therefore check if its not empty and add it to an array
+						// and concatinate it to the answers
+							// if the singlton is empty, then dont push anything to the array
+						if (Array.isArray(formAnswers)) {
+							var resultArray = _.without(formAnswers, '');
+							console.log(resultArray);
+							createdQ = new Question({
+								question: questions[i],
+								section: sections[i],
+								type: qType,
+								questionnaireId: q._id,
+								answers: [resultArray]
+							});
+						} else {
+							if (formAnswers != '') {
+								createdQ = new Question({
+									question: questions[i],
+									section: sections[i],
+									type: qType,
+									questionnaireId: q._id,
+									answers: [formAnswers]
+								});
+							} else {
+								createdQ = new Question({
+									question: questions[i],
+									section: sections[i],
+									type: qType,
+									questionnaireId: q._id,
+									answers: []
+								});
+							}
+						}
+					}
+				} else {
+					createdQ = new Question({
+						question: questions[i],
+						section: sections[i],
+						type: qType,
+						questionnaireId: q._id
+					});
+				}
 				createdQ.save(function (error, ques) {
 					if (error) {
 						console.log("error", error);
