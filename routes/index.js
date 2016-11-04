@@ -6,7 +6,20 @@ var User = require('../models/user');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-	res.render('signin');
+
+	var currenUser = req.cookies.username;
+	console.log(currenUser);
+	if (currenUser) {
+		User.find({username: currenUser}, function (err) {
+			if (err) {res.render('signin');} 
+			else {
+				res.redirect('/index');
+			}
+		});
+	} else {
+		res.render('signin');
+	}
+
 });
 
 router.post('/login', function(req, res, next) {
@@ -26,7 +39,7 @@ router.post('/login', function(req, res, next) {
 				console.log('in not null if');
 				res.cookie('username', user.username);
 				// res.send("OK");
-				res.redirect('/new');
+				res.redirect('/index');
 			}
 		});
 
@@ -75,8 +88,9 @@ router.route('/new')
 	var Questionnaire = require('../models/questionnaire');
 
 	console.log('------------');
-	console.log(req.body, req.cookies);
+	console.log(req.body);
 	console.log('------------ RES');
+	return;
 	var username = req.cookies.username;
 	var title = req.body.title;
 	var description = req.body.description;

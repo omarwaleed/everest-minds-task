@@ -28,9 +28,10 @@
 				return $scope.questions.length < 1;
 			}
 
-			$scope.addAnswer = function (divId) {
-				var element = $("#"+divId+"ans").append('<input type="text" placeholder="Answer"></input><br>');
-				$compile(element)($scope);
+			addAnswer = function (divId) {
+				var element = $("#"+divId+"ans").append('<input type="text" placeholder="Answer" name="a'+divId+'"></input><br>');
+				console.log('Add answer is called');
+				// $compile(element)($scope);
 			}
 
 			$scope.removeQuestion = function ($event) {
@@ -56,7 +57,7 @@
 				if ($scope.questions.length > 0) {
 					var tag = parseInt(new Date() / 1000);
 					var theName = $scope.questions[$scope.questions.length - 1].name;
-					var element = $('#drops').append('<div id="'+tag+'"><label>'+theName+' </label><input class="questionfield" type="text" placeholder="Question" ng-blur="updateQuestion($event)" name="question_text"></input><input type="number" min="1" placeholder="Section Number" name="section_text" class="questionfield" ng-blur="updateQuestion($event)"></input> <a class="glyphicon glyphicon-remove-circle" ng-click="removeQuestion($event)"></a><a class="glyphicon glyphicon-plus" ng-click="addAnswer('+tag+')"></a><input name="type_text" value="'+theName+'" type="hidden"></input><br><div id="'+tag+'ans"></div></div>');
+					var element = $('#drops').append('<div id="'+tag+'"><label>'+theName+' </label><input class="questionfield" type="text" placeholder="Question" ng-blur="updateQuestion($event)" name="question_text"></input><input type="number" min="1" placeholder="Section Number" name="section_text" class="questionfield" ng-blur="updateQuestion($event)"></input> <a class="glyphicon glyphicon-remove-circle" ng-click="removeQuestion($event)"></a><a class="glyphicon glyphicon-plus" onclick="addAnswer('+tag+')"></a><input name="type_text" value="'+theName+'" type="hidden"></input><br><div id="'+tag+'ans"></div></div>');
 					$compile(element)($scope);
 					$scope.questions[$scope.questions.length - 1].tag = tag;
 					// console.log($scope.questions);
@@ -110,8 +111,21 @@
 </head>
 <body ng-app="drag-ques">
 	<div class="container" ng-controller="mainCtrl">
-		<div class="row" style="margin-top: 100px;">
-			<div class="col-lg-6 col-md-offset-2">
+		<div class="row">
+			<nav class="navbar navbar-default">
+			  <div class="container-fluid">
+			    <div class="navbar-header">
+			      <a class="navbar-brand" href="/">
+			        Everest Minds Qs
+			      </a>
+			    </div>
+			    <ul class="nav navbar-nav">
+			      <li><a href="/new">New</a></li>
+			      <li><a href="/index">Index</a></li> 
+			    </ul>
+			  </div>
+			</nav>
+			<div class="col-lg-6 col-md-offset-2"  style="margin-top: 80px;">
 				<form action="/new" method="post">
 					<div style="background-color: #fff">
 						<input type="text" name="title" placeholder="Title" id="qtitle">

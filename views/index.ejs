@@ -28,8 +28,21 @@
 <body style="background: url('/images/signin.jpg');" ng-app="qindex">
 	<div class="container" ng-controller="mainCtrl">
 		<div class="row">
+			<nav class="navbar navbar-default">
+			  <div class="container-fluid">
+			    <div class="navbar-header">
+			      <a class="navbar-brand" href="/">
+			        Everest Minds Qs
+			      </a>
+			    </div>
+			    <ul class="nav navbar-nav">
+			      <li><a href="/new">New</a></li>
+			      <li><a href="/index">Index</a></li> 
+			    </ul>
+			  </div>
+			</nav>
 			<div class="col-lg-8 consolel-md-offset-4">
-				<h1>HERE</h1>
+				<h1>Index</h1>
 				<ul>
 					<li ng-repeat="q in qs"><a href="/view/{{q._id}}">{{q.title}}</a></li>
 				</ul>
