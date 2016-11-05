@@ -228,11 +228,11 @@ router.get('/qs', function (req, res) {
 });
 
 router.get('/view/:id', function (req, res) {
-	 var Questionnaire = require('../models/questionnaire');
-	 var Question = require('../models/question');
-	 Questionnaire.findById(req.params.id, function (err, doc) {
-	 	if (err) {res.send(err)}
- 		else {
+	var Questionnaire = require('../models/questionnaire');
+	var Question = require('../models/question');
+	Questionnaire.findById(req.params.id, function (err, doc) {
+		if (err) {res.send(err)}
+			else {
  			// res.render('view', {doc: doc});
  			Question.find({questionnaireId: doc._id}, function (error, q) {
  				if(error) res.send(error);
@@ -252,7 +252,36 @@ router.get('/view/:id', function (req, res) {
  				}
  			});
  		}
-	 });
+ 	});
+});
+
+router.route('/edit/:id')
+.get(function (req, res) {
+	var Questionnaire = require('../models/questionnaire');
+	var Question = require('../models/question');
+	Questionnaire.findById(req.params.id, function (err, doc) {
+		if (err) {res.send(err)}
+			else {
+ 			// res.render('view', {doc: doc});
+ 			Question.find({questionnaireId: doc._id}, function (error, q) {
+ 				if(error) res.send(error);
+ 				else {
+ 					q.sort(function (a, b) {
+						// sort according to the value of sections
+						if (parseInt(a.section) > parseInt(b.section)) {
+							return 1;
+						}
+						if (parseInt(a.section) < parseInt(b.section)) {
+							return -1;
+						}
+						// a must be equal to b
+						return 0;
+					});
+ 					res.render('edit', {questionnaire: doc, questions: q});
+ 				}
+ 			});
+ 		}
+ 	});
 });
 
 
