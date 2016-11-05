@@ -115,6 +115,7 @@ router.route('/new')
 		if (err) {
 			console.log(err);
 		} else {
+
 			for (var i = 0; i < questions.length; i++) {
 				var qType;
 				switch (types[i]) {
@@ -235,7 +236,20 @@ router.get('/view/:id', function (req, res) {
  			// res.render('view', {doc: doc});
  			Question.find({questionnaireId: doc._id}, function (error, q) {
  				if(error) res.send(error);
- 				else res.render('view', {questionnaire: doc, questions: q});
+ 				else {
+ 					q.sort(function (a, b) {
+						// sort according to the value of sections
+						if (parseInt(a.section) > parseInt(b.section)) {
+							return 1;
+						}
+						if (parseInt(a.section) < parseInt(b.section)) {
+							return -1;
+						}
+						// a must be equal to b
+						return 0;
+					});
+ 					res.render('view', {questionnaire: doc, questions: q});
+ 				}
  			});
  		}
 	 });

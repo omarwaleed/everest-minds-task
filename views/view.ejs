@@ -24,21 +24,39 @@
 </head>
 <body>
 	<div class="container">
-		<h2><%= questionnaire.title %></h2>
-		<h3><%= questionnaire.description %></h3>
-		<% for(var i = 0; i < questions.length; i++) {%>
-			<h3><%= questions[i].question %></h3>
+		<nav class="navbar navbar-default">
+		  <div class="container-fluid">
+		    <div class="navbar-header">
+		      <a class="navbar-brand" href="/">
+		        Everest Minds Qs
+		      </a>
+		    </div>
+		    <ul class="nav navbar-nav">
+		      <li><a href="/new">New</a></li>
+		      <li><a href="/index">Index</a></li> 
+		    </ul>
+		  </div>
+		</nav>
+		<h2 class="text-center"><%= questionnaire.title %></h2>
+		<h3 class="text-center"><%= questionnaire.description %></h3>
+		<% for(var i = 0; i < questions.length; i++) { %>
+			<% if(i == 0) {%>
+				<h3>Section <%= questions[i].section %>:</h3>
+			<% } else { %>
+				<% if(questions[i].section != questions[i-1].section) { %>
+					<h3>Section <%= questions[i].section %>:</h3>
+				<% } %>
+			<% } %>
+			<h4 class="col-sm-offset-1"><%= questions[i].question %></h4>
 			<% if(questions[i].answers && questions[i].answers.length > 0) { %>
 				<% if(questions[i].type == "multiple") { %>
-					<ul>
-						<h2><%= questions[i].answers %></h2>
+					<ul class="col-xs-offset-1">
 						<% for(var j = 0; j < questions[i].answers.length; j++) { %>
 							<li><input type="checkbox" name="<%= questions[i]._id %>"><%= questions[i].answers[j] %></input></li>
 						<% } %>
 					</ul>
 				<% } else { %>
-					<ul>
-						<h2><%= questions[i].answers %></h2>
+					<ul class="col-xs-offset-1">
 						<% for(var j = 0; j < questions[i].answers.length; j++) { %>
 							<li><input type="radio" name="<%= questions[i]._id %>"><%= questions[i].answers[j] %></input></li>
 						<% } %>
@@ -46,19 +64,19 @@
 				<% } %>
 			<% } else { %>
 				<% if (questions[i].type == 'bool'){ %>
-					<ul>
+					<ul class="col-xs-offset-1">
 						<li><input type="radio" name="<%= questions[i]._id %>" value="true">True</input></li>
 						<li><input type="radio" name="<%= questions[i]._id %>" value="false">False</input></li>
 					</ul>
 				<% } %>
 				<% if (questions[i].type == 'long'){ %>
-					<textarea name="<%= questions[i]._id %>"></textarea>
+					<textarea name="<%= questions[i]._id %>" class="col-xs-offset-1"></textarea>
 				<% } %>
 				<% if (questions[i].type == 'short'){ %>
-					<input type="text" name="<%= questions[i]._id %>" maxlength="150">
+					<input type="text" name="<%= questions[i]._id %>" maxlength="150" class="col-xs-offset-1">
 				<% } %>
 				<% if (questions[i].type == 'date'){ %>
-					<input type="text" name="<%= questions[i]._id %>" id="datepicker">
+					<input type="text" name="<%= questions[i]._id %>" id="datepicker" class="col-xs-offset-1">
 				<% } %>
 			<% } %>
 		<% } %>
