@@ -3,13 +3,140 @@
 <head>
 	<title>Edit Questionnaire</title>
 	<script src="/javascripts/scripts.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-filter/0.5.8/angular-filter.min.js"></script>
+	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-filter/0.5.8/angular-filter.min.js"></script> -->
+	<script src="/source/js/jquery-sortable-min.js"></script>
 	<link rel="stylesheet" type="text/css" href="/dist/css/bootstrap.min.css">
-	<link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+	<!-- <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet"> -->
+
+	<script type="text/javascript">
+
+		var app = angular.module('drag-ques', ['ngDragDrop']);
+
+		app.controller('mainCtrl', function ($scope, $compile) {
+			$scope.questionTypes = [{name: 'Multiple Choice'}, {name: 'Single Choice'}, {name: 'True/False'},
+			{name: 'Long Description'}, {name: 'Short Description'}, {name: 'Date/Time'}];
+
+			$scope.questions = [];
+			$scope.sections = [];
+			$scope.answers= [];
+
+			$scope.shouldHide = function () {
+				// return $scope.questions.length > 0;
+				return false;
+			}
+
+			$scope.hideSubmit = function () {
+				return $scope.questions.length < 1;
+			}
+
+			$scope.checkQType = function (name) {
+				// checks if the question has the ability to add answer
+				// returns false if multiple choice or single choice
+				if (name == "Single Choice" || name == "Multiple Choice") {
+					return false;
+				} else return true;
+			}
+
+			addAnswer = function (divId) {
+				var element = $("#"+divId+"ans").append('<input type="text" placeholder="Answer" name="a'+divId+'"></input><br>');
+				console.log('Add answer is called');
+				// $compile(element)($scope);
+			}
+
+			addAnswerWithValue = function (divId, answer) {
+				var element = $("#"+divId+"ans").append('<input type="text" placeholder="Answer" name="a'+divId+'" value="'+answer+'"></input><br>');
+				console.log('Add answer is called');
+				// $compile(element)($scope);
+			}
+
+			removeQuestion = function () {
+				// index depends on number of elements
+				var mainNode = event.currentTarget.parentNode;
+				console.log(event.currentTarget.parentNode);
+				mainNode.remove();
+			}
+
+			$scope.droppedQuestion = function () {
+				// console.log('DROPPED HERE');
+				// console.log($scope.questions);
+				// console.log($scope.questions.length);
+				if ($scope.questions.length > 0) {
+					var tag = parseInt(new Date() / 1000);
+					var theName = $scope.questions[$scope.questions.length - 1].name;
+					var element = $('#drops').append('<div id="'+tag+'"><label>'+theName+' </label><input class="questionfield" type="text" placeholder="Question" ng-blur="updateQuestion($event)" name="question_text"></input><input type="number" min="1" placeholder="Section Number" name="section_text" class="questionfield" ng-blur="updateQuestion($event)"></input> <a class="glyphicon glyphicon-remove-circle" onclick="removeQuestion()"></a><a class="glyphicon glyphicon-plus" onclick="addAnswer('+tag+')" ng-hide="checkQType(\''+theName+'\')"></a><input name="type_text" value="'+theName+'" type="hidden"><input name="all_inputs" value="'+tag+'" type="hidden"></input><br><div id="'+tag+'ans"></div></div>');
+					$compile(element)($scope);
+					$scope.questions[$scope.questions.length - 1].tag = tag;
+					// console.log($scope.questions);
+				}
+			}
+
+			$scope.updateQuestion = function ($event) {
+
+				var container = $($event.currentTarget.closest('div'));
+				var questionText = container.find('[name="question_text"]').val();
+				var sectionText = container.find('[name="section_text"]').val();
+
+				for (var i = $scope.questions.length - 1; i >= 0; i--) {
+					if ($scope.questions[i].tag.toString() == container.id) {
+						$scope.questions[i].question = questionText;
+						$scope.questions[i].section = sectionText;
+						break;
+					}
+				}
+			}
+
+			$scope.checkContent = function () {
+				// check the content of the form if all correct submit the form
+				if (!$('#qtitle').val() || !$('#qdesc').val()) {console.log('breaking');return;}
+				for (var i = $scope.questions.length - 1; i >= 0; i--) {
+					var theTag = $('#'+$scope.questions[i].tag);
+					// console.log(theTag.id, "tag");
+					if (theTag.find('[name="question_text"]').val() && theTag.find('[name="section_text"]').val()) {
+						console.log("continue");
+						continue;
+					} else {
+						console.log(theTag.find('[name="question_text"]').val(), theTag.find('[name="section_text"]').val(), "test")
+						return;
+					}
+				}
+				console.log('passed');
+				$('#submitLink').click();
+			}
+
+		});
+
+	</script>
+
+	<style>
+		.questionfield {
+			margin-left: 5px;
+			border-radius: 3px;
+		}
+
+		body.dragging, body.dragging * {
+		  cursor: move !important;
+		}
+
+		.dragged {
+		  position: absolute;
+		  opacity: 0.5;
+		  z-index: 2000;
+		}
+
+		ol.example li.placeholder {
+		  position: relative;
+		  /** More li styles **/
+		}
+		ol.example li.placeholder:before {
+		  position: absolute;
+		  /** Define arrowhead **/
+		}
+	</style>
+
 </head>
-<body>
-	<div class="row">
-		<div class="container">
+<body ng-app="drag-ques">
+	<div class="container" ng-controller="mainCtrl">
+		<div class="row">
 			<nav class="navbar navbar-default">
 			  <div class="container-fluid">
 			    <div class="navbar-header">
@@ -23,7 +150,87 @@
 			    </ul>
 			  </div>
 			</nav>
+			<div class="col-lg-6 col-md-offset-2"  style="margin-top: 80px;">
+				<form action="/edit" method="post">
+					<div style="background-color: #fff">
+						<input type="text" name="title" placeholder="Title" id="qtitle">
+						<input type="text" name="description" placeholder="Description" id="qdesc">
+						<!-- <p style="font-family: 'Raleway', sans-serif; font-size: 100px; color: #444"></p> -->
+						<ol data-drop="true" ng-model='questions' jqyoui-droppable="{multiple:true}">
+							<div ng-repeat="item in questions track by $index" data-drag="true" data-jqyoui-options="{revert: 'invalid', helper: 'clone'}" ng-model="questions" jqyoui-draggable="{index: {{$index}},animate:true, onDrop: droppedQuestion()}" style="margin-bottom: 20px;" class="sorting"></div>
+							<h3 class="placeholder">Drag your questions here</h3>
+							<div id="drops">
+
+							</div>
+							<!-- <input type="hidden" name="thedata" ng-model="questions"> -->
+							<!-- <input type="submit" ng-hide="hideSubmit()" class="btn btn-success"> -->
+							<input type="submit" ng-hide="true" class="btn btn-success" id="submitLink">
+							<button class="btn btn-success" ng-click="checkContent()" type="button">Done</button>
+						</ol>
+					</div>
+				</form>
+			</div>
+			<div class="col-lg-3 text-center">
+				<ul style="list-style: none;">
+					<h3>Question Types</h3>
+					<li ng-repeat="type in questionTypes" ng-show="type.name" data-drag="true" data-jqyoui-options="{revert: 'invalid', helper: 'clone'}" ng-model="questionTypes" jqyoui-draggable="{index: {{$index}}, animate: true, placeholder: 'keep'}">{{type.name}}</li>
+				</ul>
+			</div>
 		</div>
 	</div>
+
+	<script type="text/javascript">
+		$(document).on("keypress", "form", function(event) {
+	    	return event.keyCode != 13;
+		});
+		$(function  () {
+		  $("ol.sorting").sortable();
+		});
+		$(document).ready(function () {
+			writePreviousContent();
+		});
+		function writePreviousContent() {
+			// gets the content passed from the server and writes the html
+
+			$('#qtitle').val('<%= questionnaire.title %>');
+			$('#qdesc').val('<%= questionnaire.description %>');
+			var questionsLength = '<%= questions.length %>';
+			var allQuestions = <%-JSON.stringify(questions)%>;
+			console.log(allQuestions);
+			for(var i = 0; i < questionsLength; i++){
+
+				// first recreate the DOM object
+
+				var tag = parseInt(new Date() / 1000) - (i*7);
+				var theName;
+				switch (allQuestions[i].type) {
+					case 'multiple':
+						theName = "Multiple Choice";
+						break;
+					case 'single':
+						theName = "Single Choice";
+						break;
+					case 'bool':
+						theName = "True/False";
+						break;
+					case 'long':
+						theName = "Long Description";
+						break;
+					case 'short':
+						theName = "Short Description";
+						break;
+					case 'date':
+						theName = "Date/Time";
+						break;
+					default:
+						console.log('Default');
+						break;
+				}
+				var element = $('#drops').append('<div id="'+tag+'"><label>'+theName+' </label><input class="questionfield" type="text" placeholder="Question" ng-blur="updateQuestion($event)" name="question_text"></input><input type="number" min="1" placeholder="Section Number" name="section_text" class="questionfield" ng-blur="updateQuestion($event)"></input> <a class="glyphicon glyphicon-remove-circle" onclick="removeQuestion()"></a><a class="glyphicon glyphicon-plus" onclick="addAnswer('+tag+')" ng-hide="checkQType(\''+theName+'\')"></a><input name="type_text" value="'+theName+'" type="hidden"><input name="all_inputs" value="'+tag+'" type="hidden"></input><br><div id="'+tag+'ans"></div></div>');
+
+				// then recreate its answers
+			}
+		}
+	</script>
 </body>
 </html>

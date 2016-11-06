@@ -16,6 +16,7 @@
     "express": "~4.13.4",
     "grunt": "^1.0.1",
     "jquery": "^3.1.1",
+    "jquery-sortable": "^0.9.13",
     "jquery-ui": "^1.12.1",
     "jquery-ui-dist": "^1.12.1",
     "mongoose": "^4.6.5",
