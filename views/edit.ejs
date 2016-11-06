@@ -203,12 +203,15 @@
 
 				var tag = parseInt(new Date() / 1000) - (i*7);
 				var theName;
+				var plusVisibilityType = "none";
 				switch (allQuestions[i].type) {
 					case 'multiple':
 						theName = "Multiple Choice";
+						plusVisibilityType = "inline";
 						break;
 					case 'single':
 						theName = "Single Choice";
+						plusVisibilityType = "inline";
 						break;
 					case 'bool':
 						theName = "True/False";
@@ -226,7 +229,7 @@
 						console.log('Default');
 						break;
 				}
-				var element = $('#drops').append('<div id="'+tag+'"><label>'+theName+' </label><input class="questionfield" type="text" placeholder="Question" ng-blur="updateQuestion($event)" name="question_text"></input><input type="number" min="1" placeholder="Section Number" name="section_text" class="questionfield" ng-blur="updateQuestion($event)"></input> <a class="glyphicon glyphicon-remove-circle" onclick="removeQuestion()"></a><a class="glyphicon glyphicon-plus" onclick="addAnswer('+tag+')" ng-hide="checkQType(\''+theName+'\')"></a><input name="type_text" value="'+theName+'" type="hidden"><input name="all_inputs" value="'+tag+'" type="hidden"></input><br><div id="'+tag+'ans"></div></div>');
+				var element = $('#drops').append('<div id="'+tag+'"><label>'+theName+' </label><input class="questionfield" type="text" placeholder="Question" ng-blur="updateQuestion($event)" name="question_text" value="'+allQuestions[i].question+'"></input><input type="number" min="1" placeholder="Section Number" name="section_text" class="questionfield" ng-blur="updateQuestion($event)" value="'+allQuestions[i].section+'"></input> <a class="glyphicon glyphicon-remove-circle" onclick="removeQuestion()"></a><a class="glyphicon glyphicon-plus" onclick="addAnswer('+tag+')" style="display: '+plusVisibilityType+'"></a><input name="type_text" value="'+theName+'" type="hidden"><input name="all_inputs" value="'+tag+'" type="hidden"></input><br><div id="'+tag+'ans"></div></div>');
 
 				// then recreate its answers
 			}
