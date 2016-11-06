@@ -43,12 +43,6 @@
 				// $compile(element)($scope);
 			}
 
-			addAnswerWithValue = function (divId, answer) {
-				var element = $("#"+divId+"ans").append('<input type="text" placeholder="Answer" name="a'+divId+'" value="'+answer+'"></input><br>');
-				console.log('Add answer is called');
-				// $compile(element)($scope);
-			}
-
 			removeQuestion = function () {
 				// index depends on number of elements
 				var mainNode = event.currentTarget.parentNode;
@@ -85,7 +79,7 @@
 				}
 			}
 
-			$scope.checkContent = function () {
+			checkContent = function () {
 				// check the content of the form if all correct submit the form
 				if (!$('#qtitle').val() || !$('#qdesc').val()) {console.log('breaking');return;}
 				for (var i = $scope.questions.length - 1; i >= 0; i--) {
@@ -153,6 +147,7 @@
 			<div class="col-lg-6 col-md-offset-2"  style="margin-top: 80px;">
 				<form action="/edit" method="post">
 					<div style="background-color: #fff">
+						<input type="hidden" name="qid" value="<%= questionnaire._id %>">
 						<input type="text" name="title" placeholder="Title" id="qtitle">
 						<input type="text" name="description" placeholder="Description" id="qdesc">
 						<!-- <p style="font-family: 'Raleway', sans-serif; font-size: 100px; color: #444"></p> -->
@@ -165,7 +160,7 @@
 							<!-- <input type="hidden" name="thedata" ng-model="questions"> -->
 							<!-- <input type="submit" ng-hide="hideSubmit()" class="btn btn-success"> -->
 							<input type="submit" ng-hide="true" class="btn btn-success" id="submitLink">
-							<button class="btn btn-success" ng-click="checkContent()" type="button">Done</button>
+							<button class="btn btn-success" onclick="checkContent()" type="button">Done</button>
 						</ol>
 					</div>
 				</form>
@@ -232,7 +227,16 @@
 				var element = $('#drops').append('<div id="'+tag+'"><label>'+theName+' </label><input class="questionfield" type="text" placeholder="Question" ng-blur="updateQuestion($event)" name="question_text" value="'+allQuestions[i].question+'"></input><input type="number" min="1" placeholder="Section Number" name="section_text" class="questionfield" ng-blur="updateQuestion($event)" value="'+allQuestions[i].section+'"></input> <a class="glyphicon glyphicon-remove-circle" onclick="removeQuestion()"></a><a class="glyphicon glyphicon-plus" onclick="addAnswer('+tag+')" style="display: '+plusVisibilityType+'"></a><input name="type_text" value="'+theName+'" type="hidden"><input name="all_inputs" value="'+tag+'" type="hidden"></input><br><div id="'+tag+'ans"></div></div>');
 
 				// then recreate its answers
+				console.log(allQuestions[i].answers);
+				for(var j = 0; j < allQuestions[i].answers.length; j++) {
+					addAnswerWithValue(tag, allQuestions[i].answers[j]);
+				}
 			}
+		}
+
+		function addAnswerWithValue(divId, answer) {
+			var element = $("#"+divId+"ans").append('<input type="text" placeholder="Answer" name="a'+divId+'" value="'+answer+'"></input><br>');
+			// $compile(element)($scope);
 		}
 	</script>
 </body>

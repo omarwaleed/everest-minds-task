@@ -88,9 +88,9 @@ router.route('/new')
 	var Question = require('../models/question');
 	var Questionnaire = require('../models/questionnaire');
 
-	console.log('------------');
-	console.log(req.body);
-	console.log('------------ RES');
+	// console.log('------------');
+	// console.log(req.body);
+	// console.log('------------ RES');
 	var username = req.cookies.username;
 	var title = req.body.title;
 	var description = req.body.description;
@@ -109,6 +109,8 @@ router.route('/new')
 	if (!Array.isArray(questions) && !Array.isArray(sections)) {
 		questions = [questions];
 		sections = [sections];
+		types = [types];
+		tags = [tags];
 	}
 
 	createdQuestionnaire.save(function (err, q) {
@@ -180,6 +182,14 @@ router.route('/new')
 								});
 							}
 						}
+					} else {
+						createdQ = new Question({
+							question: questions[i],
+							section: sections[i],
+							type: qType,
+							questionnaireId: q._id,
+							answers: []
+						});
 					}
 				} else {
 					createdQ = new Question({
@@ -284,6 +294,170 @@ router.route('/edit/:id')
  	});
 });
 
+router.post('/edit', function (req, res) {
+	// handles the form submission of edit view
+
+	console.log(req.body);
+
+	var Question = require('../models/question');
+	var Questionnaire = require('../models/questionnaire');
+
+	// console.log('------------');
+	// console.log(req.body);
+	// console.log('------------ RES');
+	var questionnaireId = req.body.qid;
+	var username = req.cookies.username;
+	var title = req.body.title;
+	var description = req.body.description;
+	var questions = req.body.question_text;
+	var sections = req.body.section_text;
+	var types = req.body.type_text;
+	var tags = req.body.all_inputs;
+
+	// var createdQuestionnaire = new Questionnaire({
+	// 	title: title,
+	// 	description: description,
+	// 	createdBy: username
+	// 	// in practice, created by will use the userID not the username
+	// });
+
+	if (!Array.isArray(questions) && !Array.isArray(sections)) {
+		questions = [questions];
+		sections = [sections];
+		types = [types];
+		tags = [tags];
+	}
+
+	Questionnaire.findById(questionnaireId, function (err, q) {
+		if (err) {
+			console.log(err);
+		} else {
+			Question.remove({questionnaireId: q._id}, function (err2) {
+				if (err2) {
+					return;
+				}
+			});
+
+			if (types == null) {return;}
+			for (var i = 0; i < questions.length; i++) {
+				var qType;
+				switch (types[i]) {
+					case 'Multiple Choice':
+						qType = "multiple";
+						break;
+					case 'Single Choice':
+						qType = "single";
+						break;
+					case 'True/False':
+						qType = "bool";
+						break;
+					case 'Long Description':
+						qType = "long";
+						break;
+					case 'Short Description':
+						qType = "short";
+						break;
+					case 'Date/Time':
+						qType = "date";
+						break;
+					default:
+						break;
+				}
+				var createdQ;
+				console.log("Testing here", qType);
+				if (qType == "single" || qType == "multiple") {
+
+					// if single or multiple choice question get answers before create question
+					var formAnswers = req.body['a'+tags[i]];
+					console.log("form answers ", formAnswers);
+					if (formAnswers) {
+						// if form answers is an array check if its content doesn't contain empty fields
+							// if any empty fields is found, strip it away from the array
+						// else form answers is a singlton and therefore check if its not empty and add it to an array
+						// and concatinate it to the answers
+							// if the singlton is empty, then dont push anything to the array
+						if (Array.isArray(formAnswers)) {
+							var resultArray = _.without(formAnswers, '');
+							console.log(resultArray);
+							createdQ = new Question({
+								question: questions[i],
+								section: sections[i],
+								type: qType,
+								questionnaireId: q._id,
+								answers: resultArray
+							});
+						} else {
+							if (formAnswers != '') {
+								createdQ = new Question({
+									question: questions[i],
+									section: sections[i],
+									type: qType,
+									questionnaireId: q._id,
+									answers: [formAnswers]
+								});
+							} else {
+								createdQ = new Question({
+									question: questions[i],
+									section: sections[i],
+									type: qType,
+									questionnaireId: q._id,
+									answers: []
+								});
+							}
+						}
+					} else {
+						createdQ = new Question({
+							question: questions[i],
+							section: sections[i],
+							type: qType,
+							questionnaireId: q._id,
+							answers: []
+						});
+					}
+				} else {
+					console.log("No answers");
+					createdQ = new Question({
+						question: questions[i],
+						section: sections[i],
+						type: qType,
+						questionnaireId: q._id,
+						answers: []
+					});
+				}
+				createdQ.save(function (error, ques) {
+					if (error) {
+						console.log("error", error);
+					} else {
+						console.log("Success", ques);
+					}
+				});
+			}
+		}
+	});
+
+
+	res.redirect('/index');
+});
+
+router.get('/delete/:id', function (req, res) {
+	var Question = require('../models/question');
+	var Questionnaire = require('../models/questionnaire');
+
+	console.log("GOT INSIDE");
+
+	Question.remove({questionnaireId: req.params.id}, function (error) {
+		if (error) {
+			console.log(error);
+		} 
+	});
+	Questionnaire.remove({_id: req.params.id}, function (error) {
+		if (error) {
+			console.log(error);
+		} 
+	});
+
+	res.redirect('/index');
+});
 
 
 module.exports = router;
